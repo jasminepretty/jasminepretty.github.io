@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#4CAF50" />
+  <title>健康追蹤 Health Tracker</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥗</text></svg>" />
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <!-- Custom styles -->
+  <link href="css/app.css" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay d-none">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">載入中...</span>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index:9999">
+    <div id="app-toast" class="toast align-items-center border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body" id="toast-body">訊息</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== AUTH SCREEN ==================== -->
+  <section id="screen-auth" class="screen">
+    <div class="auth-wrap">
+      <div class="auth-logo">
+        <span class="auth-logo-icon">🥗</span>
+        <h1 class="auth-title">健康追蹤</h1>
+        <p class="auth-subtitle">與好友一起互相監督，建立健康習慣</p>
+      </div>
+      <div class="card auth-card shadow-sm">
+        <div class="card-body p-4">
+          <div id="auth-error" class="alert alert-danger d-none" role="alert"></div>
+
+          <!-- Login Mode -->
+          <div id="auth-login-form">
+            <h5 class="card-title mb-3">登入</h5>
+            <div class="mb-3">
+              <label class="form-label">電子郵件</label>
+              <input type="email" id="login-email" class="form-control" placeholder="your@email.com" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">密碼</label>
+              <input type="password" id="login-password" class="form-control" placeholder="請輸入密碼" />
+            </div>
+            <button id="btn-login" class="btn btn-primary w-100 mb-2">登入</button>
+            <button id="btn-google-login" class="btn btn-outline-dark w-100 mb-3">
+              <i class="bi bi-google me-2"></i>使用 Google 登入
+            </button>
+            <div class="text-center">
+              <button id="btn-show-register" class="btn btn-link btn-sm">還沒有帳號？立即註冊</button>
+            </div>
+            <div class="text-center">
+              <button id="btn-forgot-password" class="btn btn-link btn-sm text-secondary">忘記密碼？</button>
+            </div>
+          </div>
+
+          <!-- Register Mode -->
+          <div id="auth-register-form" class="d-none">
+            <h5 class="card-title mb-3">建立帳號</h5>
+            <div class="mb-3">
+              <label class="form-label">暱稱</label>
+              <input type="text" id="reg-name" class="form-control" placeholder="你的名字" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">電子郵件</label>
+              <input type="email" id="reg-email" class="form-control" placeholder="your@email.com" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">密碼</label>
+              <input type="password" id="reg-password" class="form-control" placeholder="至少 6 個字元" />
+            </div>
+            <button id="btn-register" class="btn btn-primary w-100 mb-3">建立帳號</button>
+            <div class="text-center">
+              <button id="btn-show-login" class="btn btn-link btn-sm">已有帳號？登入</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== MAIN APP (shown after auth) ==================== -->
+  <div id="app-shell" class="d-none">
+
+    <!-- Top App Bar -->
+    <header class="app-bar">
+      <button id="btn-back" class="app-bar-back d-none"><i class="bi bi-arrow-left"></i></button>
+      <span id="app-bar-title" class="app-bar-title">首頁</span>
+      <button id="btn-settings" class="app-bar-action"><i class="bi bi-gear"></i></button>
+    </header>
+
+    <!-- ==================== DASHBOARD ==================== -->
+    <section id="screen-dashboard" class="screen app-screen">
+      <div class="app-content">
+        <div class="px-3 pt-2 pb-1">
+          <p id="dashboard-greeting" class="text-muted small mb-1">今天，<span id="dashboard-date"></span></p>
+        </div>
+
+        <!-- Goal Rings -->
+        <div class="px-3 mb-3">
+          <div class="row g-2">
+            <div class="col-4">
+              <div class="ring-card" id="ring-calories">
+                <div class="ring-wrap">
+                  <svg class="ring-svg" viewBox="0 0 36 36">
+                    <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+                    <circle class="ring-fg ring-calories-fg" cx="18" cy="18" r="15.9" stroke-dasharray="0 100"/>
+                  </svg>
+                  <span class="ring-val" id="ring-cal-val">0</span>
+                </div>
+                <div class="ring-label">熱量</div>
+                <div class="ring-sub" id="ring-cal-sub">/ 0 kcal</div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="ring-card" id="ring-water">
+                <div class="ring-wrap">
+                  <svg class="ring-svg" viewBox="0 0 36 36">
+                    <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+                    <circle class="ring-fg ring-water-fg" cx="18" cy="18" r="15.9" stroke-dasharray="0 100"/>
+                  </svg>
+                  <span class="ring-val" id="ring-water-val">0</span>
+                </div>
+                <div class="ring-label">喝水</div>
+                <div class="ring-sub" id="ring-water-sub">/ 0 ml</div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="ring-card" id="ring-exercise">
+                <div class="ring-wrap">
+                  <svg class="ring-svg" viewBox="0 0 36 36">
+                    <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+                    <circle class="ring-fg ring-exercise-fg" cx="18" cy="18" r="15.9" stroke-dasharray="0 100"/>
+                  </svg>
+                  <span class="ring-val" id="ring-ex-val">0</span>
+                </div>
+                <div class="ring-label">運動</div>
+                <div class="ring-sub">分鐘</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="px-3 mb-3">
+          <div class="row g-2">
+            <div class="col-6">
+              <div class="card h-100">
+                <div class="card-body p-2">
+                  <p class="card-title small fw-bold mb-1">巨量素</p>
+                  <canvas id="chart-macros" height="120"></canvas>
+                  <div id="macros-legend" class="macros-legend mt-1"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="card h-100">
+                <div class="card-body p-2">
+                  <p class="card-title small fw-bold mb-1">體重趨勢</p>
+                  <canvas id="chart-weight" height="120"></canvas>
+                  <p id="weight-no-data" class="text-muted small text-center mt-2 d-none">尚無體重紀錄</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Friend Feed -->
+        <div class="px-3 mb-5">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">好友動態</h6>
+            <button class="btn btn-sm btn-outline-primary" onclick="app.navigate('friends')">管理好友</button>
+          </div>
+          <div id="friend-feed">
+            <div class="text-muted small text-center py-3">尚未新增好友，<button class="btn btn-link btn-sm p-0" onclick="app.navigate('friends')">立即邀請朋友</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAB -->
+      <button class="fab" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-quickadd">
+        <i class="bi bi-plus-lg"></i>
+      </button>
+
+      <!-- Quick Add Offcanvas -->
+      <div class="offcanvas offcanvas-bottom rounded-top-3" id="offcanvas-quickadd" tabindex="-1">
+        <div class="offcanvas-header pb-0">
+          <h6 class="offcanvas-title">快速新增</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+          <div class="row g-3 pb-2">
+            <div class="col-6">
+              <button class="btn btn-outline-success w-100 py-3" onclick="app.navigate('food');bootstrap.Offcanvas.getInstance(document.getElementById('offcanvas-quickadd')).hide()">
+                <i class="bi bi-egg-fried d-block fs-3 mb-1"></i>新增飲食
+              </button>
+            </div>
+            <div class="col-6">
+              <button class="btn btn-outline-primary w-100 py-3" onclick="app.navigate('water');bootstrap.Offcanvas.getInstance(document.getElementById('offcanvas-quickadd')).hide()">
+                <i class="bi bi-droplet d-block fs-3 mb-1"></i>記錄喝水
+              </button>
+            </div>
+            <div class="col-6">
+              <button class="btn btn-outline-warning w-100 py-3" onclick="app.navigate('exercise');bootstrap.Offcanvas.getInstance(document.getElementById('offcanvas-quickadd')).hide()">
+                <i class="bi bi-lightning d-block fs-3 mb-1"></i>新增運動
+              </button>
+            </div>
+            <div class="col-6">
+              <button class="btn btn-outline-danger w-100 py-3" onclick="app.navigate('weight');bootstrap.Offcanvas.getInstance(document.getElementById('offcanvas-quickadd')).hide()">
+                <i class="bi bi-bar-chart d-block fs-3 mb-1"></i>記錄體重
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== FOOD LOG ==================== -->
+    <section id="screen-food" class="screen app-screen d-none">
+      <div class="app-content">
+        <!-- Date Nav -->
+        <div class="date-nav px-3 py-2 d-flex align-items-center justify-content-between">
+          <button class="btn btn-sm btn-outline-secondary" id="food-prev-day"><i class="bi bi-chevron-left"></i></button>
+          <input type="date" id="food-date" class="form-control form-control-sm text-center date-input" />
+          <button class="btn btn-sm btn-outline-secondary" id="food-next-day"><i class="bi bi-chevron-right"></i></button>
+        </div>
+
+        <div class="px-3 pt-2 pb-5" id="food-meals-container">
+          <!-- Meal sections rendered by food.js -->
+        </div>
+
+        <!-- Daily Totals Sticky Bar -->
+        <div class="totals-bar" id="food-totals-bar">
+          <div class="totals-bar-inner">
+            <div class="total-item"><span class="total-val" id="total-cal">0</span><span class="total-lbl">kcal</span></div>
+            <div class="total-item"><span class="total-val" id="total-prot">0</span><span class="total-lbl">蛋白質g</span></div>
+            <div class="total-item"><span class="total-val" id="total-carbs">0</span><span class="total-lbl">碳水g</span></div>
+            <div class="total-item"><span class="total-val" id="total-fat">0</span><span class="total-lbl">脂肪g</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== WATER ==================== -->
+    <section id="screen-water" class="screen app-screen d-none">
+      <div class="app-content px-3 py-3">
+        <!-- Big water ring -->
+        <div class="text-center mb-4">
+          <div class="water-ring-wrap">
+            <svg class="water-ring-svg" viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="52"/>
+              <circle class="ring-fg ring-water-fg" id="water-big-ring" cx="60" cy="60" r="52" stroke-dasharray="0 327"/>
+            </svg>
+            <div class="water-ring-center">
+              <span class="water-ring-val" id="water-current">0</span>
+              <span class="water-ring-unit">ml</span>
+            </div>
+          </div>
+          <p class="text-muted mt-2 mb-0" id="water-goal-text">目標：0 ml</p>
+        </div>
+
+        <!-- Quick Add Buttons -->
+        <div class="d-flex gap-2 flex-wrap justify-content-center mb-3">
+          <button class="btn btn-outline-primary water-add-btn" data-ml="150">+150ml</button>
+          <button class="btn btn-outline-primary water-add-btn" data-ml="250">+250ml</button>
+          <button class="btn btn-outline-primary water-add-btn" data-ml="350">+350ml</button>
+          <button class="btn btn-outline-primary water-add-btn" data-ml="500">+500ml</button>
+          <button class="btn btn-outline-secondary water-add-btn" data-ml="custom">自訂</button>
+        </div>
+
+        <!-- 7-day chart -->
+        <div class="card mb-3">
+          <div class="card-body p-2">
+            <p class="small fw-bold mb-1">近7日喝水量</p>
+            <canvas id="chart-water-week" height="100"></canvas>
+          </div>
+        </div>
+
+        <!-- Today's log -->
+        <h6>今日紀錄</h6>
+        <div id="water-log-list" class="pb-5">
+          <p class="text-muted small text-center py-2">今天還沒有喝水紀錄</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== EXERCISE ==================== -->
+    <section id="screen-exercise" class="screen app-screen d-none">
+      <div class="app-content px-3 py-3">
+        <!-- Date Nav -->
+        <div class="date-nav d-flex align-items-center justify-content-between mb-3">
+          <button class="btn btn-sm btn-outline-secondary" id="ex-prev-day"><i class="bi bi-chevron-left"></i></button>
+          <input type="date" id="ex-date" class="form-control form-control-sm text-center date-input" />
+          <button class="btn btn-sm btn-outline-secondary" id="ex-next-day"><i class="bi bi-chevron-right"></i></button>
+        </div>
+
+        <!-- Weekly Chart -->
+        <div class="card mb-3">
+          <div class="card-body p-2">
+            <p class="small fw-bold mb-1">近7日運動時間（分鐘）</p>
+            <canvas id="chart-exercise-week" height="100"></canvas>
+          </div>
+        </div>
+
+        <!-- Exercise List -->
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h6 class="mb-0">當日運動</h6>
+          <button class="btn btn-sm btn-primary" id="btn-add-exercise"><i class="bi bi-plus me-1"></i>新增</button>
+        </div>
+        <div id="exercise-log-list" class="pb-5">
+          <p class="text-muted small text-center py-3">今天還沒有運動紀錄<br><small>加油！動起來 💪</small></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== WEIGHT ==================== -->
+    <section id="screen-weight" class="screen app-screen d-none">
+      <div class="app-content px-3 py-3">
+        <!-- Current Weight -->
+        <div class="text-center mb-3">
+          <div class="weight-display">
+            <span id="weight-current-val">--</span>
+            <span class="weight-unit">kg</span>
+          </div>
+          <div id="bmi-display" class="bmi-wrap d-none">
+            <span class="bmi-label">BMI </span>
+            <span id="bmi-val" class="fw-bold"></span>
+            <span id="bmi-category" class="badge ms-1"></span>
+          </div>
+          <button class="btn btn-primary btn-sm mt-2" id="btn-add-weight"><i class="bi bi-plus me-1"></i>記錄體重</button>
+        </div>
+
+        <!-- 30-day Chart -->
+        <div class="card mb-3">
+          <div class="card-body p-2">
+            <p class="small fw-bold mb-1">近30日體重變化</p>
+            <canvas id="chart-weight-30" height="120"></canvas>
+          </div>
+        </div>
+
+        <!-- Weight Log List -->
+        <h6>紀錄歷史</h6>
+        <div id="weight-log-list" class="pb-5">
+          <p class="text-muted small text-center py-3">尚無體重紀錄</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== FRIENDS ==================== -->
+    <section id="screen-friends" class="screen app-screen d-none">
+      <div class="app-content px-3 py-3">
+        <!-- My Friend Code -->
+        <div class="card mb-3 border-primary">
+          <div class="card-body text-center">
+            <p class="small text-muted mb-1">我的好友碼</p>
+            <div class="friend-code" id="my-friend-code">--------</div>
+            <div class="d-flex gap-2 justify-content-center mt-2">
+              <button class="btn btn-sm btn-outline-primary" id="btn-copy-code"><i class="bi bi-clipboard me-1"></i>複製</button>
+              <button class="btn btn-sm btn-outline-secondary" id="btn-share-code"><i class="bi bi-share me-1"></i>分享</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Friend -->
+        <div class="card mb-3">
+          <div class="card-body">
+            <h6 class="card-title">新增好友</h6>
+            <div class="input-group">
+              <input type="text" id="friend-code-input" class="form-control" placeholder="輸入好友碼（8碼）" maxlength="8" style="text-transform:uppercase" />
+              <button class="btn btn-primary" id="btn-add-friend">送出邀請</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Privacy Toggle -->
+        <div class="card mb-3">
+          <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="mb-0">分享我的資料</h6>
+              <small class="text-muted">讓好友看到你的每日進度</small>
+            </div>
+            <div class="form-check form-switch mb-0">
+              <input class="form-check-input" type="checkbox" id="privacy-toggle" checked />
+            </div>
+          </div>
+        </div>
+
+        <!-- Pending Requests -->
+        <div id="pending-requests-section" class="d-none mb-3">
+          <h6>待確認邀請</h6>
+          <div id="pending-requests-list"></div>
+        </div>
+
+        <!-- Friends List -->
+        <h6>我的好友</h6>
+        <div id="friends-list" class="pb-5">
+          <div class="text-muted small text-center py-3">還沒有好友，分享你的好友碼邀請朋友吧！</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SETTINGS ==================== -->
+    <section id="screen-settings" class="screen app-screen d-none">
+      <div class="app-content px-3 py-3 pb-5">
+        <h6 class="mb-3">個人資料</h6>
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label small">暱稱</label>
+              <input type="text" id="settings-name" class="form-control" />
+            </div>
+            <div class="mb-0">
+              <label class="form-label small">身高（cm，用於計算 BMI）</label>
+              <input type="number" id="settings-height" class="form-control" placeholder="例：165" min="100" max="250" />
+            </div>
+          </div>
+        </div>
+
+        <h6 class="mb-3">每日目標</h6>
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-6">
+                <label class="form-label small">熱量（kcal）</label>
+                <input type="number" id="goal-calories" class="form-control" placeholder="1800" />
+              </div>
+              <div class="col-6">
+                <label class="form-label small">蛋白質（g）</label>
+                <input type="number" id="goal-protein" class="form-control" placeholder="60" />
+              </div>
+              <div class="col-6">
+                <label class="form-label small">碳水化合物（g）</label>
+                <input type="number" id="goal-carbs" class="form-control" placeholder="250" />
+              </div>
+              <div class="col-6">
+                <label class="form-label small">脂肪（g）</label>
+                <input type="number" id="goal-fat" class="form-control" placeholder="65" />
+              </div>
+              <div class="col-12">
+                <label class="form-label small">每日喝水量（ml）</label>
+                <input type="number" id="goal-water" class="form-control" placeholder="2000" />
+              </div>
+            </div>
+            <button class="btn btn-primary w-100 mt-3" id="btn-save-settings">儲存設定</button>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-body">
+            <h6 class="card-title">帳號</h6>
+            <button class="btn btn-outline-danger w-100" id="btn-logout"><i class="bi bi-box-arrow-right me-2"></i>登出</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== BOTTOM NAV ==================== -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-screen="dashboard">
+        <i class="bi bi-house"></i>
+        <span>首頁</span>
+      </button>
+      <button class="nav-item" data-screen="food">
+        <i class="bi bi-egg-fried"></i>
+        <span>飲食</span>
+      </button>
+      <button class="nav-item" data-screen="water">
+        <i class="bi bi-droplet"></i>
+        <span>水分</span>
+      </button>
+      <button class="nav-item" data-screen="exercise">
+        <i class="bi bi-lightning"></i>
+        <span>運動</span>
+      </button>
+      <button class="nav-item" data-screen="weight">
+        <i class="bi bi-bar-chart"></i>
+        <span>體重</span>
+      </button>
+    </nav>
+
+  </div><!-- /#app-shell -->
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Add Food Modal -->
+  <div class="modal fade" id="modal-add-food" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">新增飲食</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="food-meal-badge" class="badge bg-secondary mb-3"></div>
+          <!-- Tabs -->
+          <ul class="nav nav-tabs mb-3" id="food-modal-tabs">
+            <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-db">食品資料庫</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-manual">手動輸入</a></li>
+          </ul>
+          <div class="tab-content">
+            <!-- DB Search Tab -->
+            <div class="tab-pane fade show active" id="tab-db">
+              <input type="text" id="food-search" class="form-control mb-2" placeholder="搜尋食物名稱..." />
+              <div id="food-search-results" class="food-search-results"></div>
+              <div id="food-selected-preview" class="d-none">
+                <div class="alert alert-success py-2 small" id="food-selected-name"></div>
+              </div>
+            </div>
+            <!-- Manual Tab -->
+            <div class="tab-pane fade" id="tab-manual">
+              <div class="mb-2">
+                <label class="form-label small">食物名稱</label>
+                <input type="text" id="manual-name" class="form-control" placeholder="例：雞腿便當" />
+              </div>
+              <div class="row g-2">
+                <div class="col-6">
+                  <label class="form-label small">熱量（kcal）</label>
+                  <input type="number" id="manual-cal" class="form-control" placeholder="0" min="0" />
+                </div>
+                <div class="col-6">
+                  <label class="form-label small">蛋白質（g）</label>
+                  <input type="number" id="manual-prot" class="form-control" placeholder="0" min="0" />
+                </div>
+                <div class="col-6">
+                  <label class="form-label small">碳水（g）</label>
+                  <input type="number" id="manual-carbs" class="form-control" placeholder="0" min="0" />
+                </div>
+                <div class="col-6">
+                  <label class="form-label small">脂肪（g）</label>
+                  <input type="number" id="manual-fat" class="form-control" placeholder="0" min="0" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary" id="btn-save-food">儲存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Exercise Modal -->
+  <div class="modal fade" id="modal-add-exercise" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">新增運動</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label small">運動名稱</label>
+            <input type="text" id="ex-name" class="form-control" placeholder="例：跑步、重訓、游泳" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label small">類別</label>
+            <select id="ex-category" class="form-select">
+              <option value="cardio">有氧運動</option>
+              <option value="strength">重量訓練</option>
+              <option value="flexibility">柔軟伸展</option>
+              <option value="sport">球類運動</option>
+              <option value="other">其他</option>
+            </select>
+          </div>
+          <div class="row g-2">
+            <div class="col-6">
+              <label class="form-label small">時間（分鐘）</label>
+              <input type="number" id="ex-duration" class="form-control" placeholder="30" min="1" />
+            </div>
+            <div class="col-6">
+              <label class="form-label small">消耗熱量（選填）</label>
+              <input type="number" id="ex-calories" class="form-control" placeholder="0" min="0" />
+            </div>
+          </div>
+          <div class="mb-0 mt-2">
+            <label class="form-label small">備註（選填）</label>
+            <input type="text" id="ex-notes" class="form-control" placeholder="" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary" id="btn-save-exercise">儲存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Weight Modal -->
+  <div class="modal fade" id="modal-add-weight" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">記錄體重</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label small">體重（kg）</label>
+            <input type="number" id="w-kg" class="form-control form-control-lg text-center" placeholder="60.0" step="0.1" min="20" max="300" />
+          </div>
+          <div class="row g-2">
+            <div class="col-6">
+              <label class="form-label small">體脂肪（%，選填）</label>
+              <input type="number" id="w-fat" class="form-control" placeholder="20" step="0.1" min="1" max="60" />
+            </div>
+            <div class="col-6">
+              <label class="form-label small">備註（選填）</label>
+              <input type="text" id="w-notes" class="form-control" placeholder="" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary" id="btn-save-weight">儲存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Water Modal -->
+  <div class="modal fade" id="modal-custom-water" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">自訂喝水量</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="number" id="custom-water-ml" class="form-control form-control-lg text-center" placeholder="300" min="1" max="5000" />
+          <p class="text-muted small text-center mt-1">毫升 (ml)</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary" id="btn-save-custom-water">儲存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase v9 modular SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { FIREBASE_CONFIG } from './js/firebase-config.js';
+    import { initAuth } from './js/auth.js';
+    import { initApp } from './js/app.js';
+
+    const firebaseApp = initializeApp(FIREBASE_CONFIG);
+    window._firebaseApp = firebaseApp;
+    window._auth = getAuth(firebaseApp);
+    window._db = getFirestore(firebaseApp);
+
+    await initAuth();
+    initApp();
+  </script>
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</body>
+</html>
