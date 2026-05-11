@@ -82,14 +82,15 @@ async function addFriend() {
     await sendFriendRequest(_uid, targetUser.uid);
     input.value = '';
     showToast(`已送出好友邀請給 ${targetUser.displayName || '對方'}`);
-    await loadPendingRequests();
   } catch (e) {
     if (e.message === 'already_friends') showToast('你們已經是好友了', 'warning');
     else if (e.message === 'already_pending') showToast('已送出邀請，等待對方確認', 'warning');
     else showToast('送出邀請失敗，請再試一次', 'error');
+    return;
   } finally {
     hideLoading();
   }
+  await loadPendingRequests();
 }
 
 async function loadPendingRequests() {
