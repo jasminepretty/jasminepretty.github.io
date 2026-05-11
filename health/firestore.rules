@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 使用者資料：本人可讀寫，其他登入者只能讀基本資料（好友碼查詢用）
+    match /users/{uid} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == uid;
+
+      // 個人記錄（食物/水/運動/體重）：只有本人可讀寫
+      match /foodLogs/{docId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+      match /waterLogs/{docId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+      match /exerciseLogs/{docId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+      match /weightLogs/{docId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+
+      // 共享統計：本人可寫，好友可讀
+      match /sharedStats/{docId} {
+        allow write: if request.auth != null && request.auth.uid == uid;
+        allow read: if request.auth != null;
+      }
+    }
+
+    // 好友關係：雙方都可以讀，發起人可以建立，雙方可以更新/刪除
+    match /friendships/{fid} {
+      allow read: if request.auth != null &&
+        (resource.data.userA == request.auth.uid || resource.data.userB == request.auth.uid);
+
+      allow create: if request.auth != null &&
+        (request.resource.data.userA == request.auth.uid || request.resource.data.userB == request.auth.uid) &&
+        request.resource.data.initiatedBy == request.auth.uid &&
+        request.resource.data.status == 'pending';
+
+      allow update: if request.auth != null &&
+        (resource.data.userA == request.auth.uid || resource.data.userB == request.auth.uid);
+
+      allow delete: if request.auth != null &&
+        (resource.data.userA == request.auth.uid || resource.data.userB == request.auth.uid);
+    }
+  }
+}
