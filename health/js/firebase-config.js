@@ -9,10 +9,11 @@
 //      (e.g. jasminepretty.github.io)
 
 export const FIREBASE_CONFIG = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCGTjgDLj9XABJ5xOEmGLzJWEH8_3DhiOo",
+  authDomain: "eatwhat-69f1b.firebaseapp.com",
+  projectId: "eatwhat-69f1b",
+  storageBucket: "eatwhat-69f1b.firebasestorage.app",
+  messagingSenderId: "537639403918",
+  appId: "1:537639403918:web:13bac546de671c20afe4df",
+  measurementId: "G-XLV641KLBZ"
 };
