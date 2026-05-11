@@ -1,0 +1,18 @@
+{
+  "name": "健康追蹤 Health Tracker",
+  "short_name": "健康追蹤",
+  "description": "記錄每日飲食、喝水、運動與體重，與好友互相監督",
+  "start_url": "/health/",
+  "display": "standalone",
+  "background_color": "#f5f7fa",
+  "theme_color": "#4CAF50",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234CAF50'/><text y='.9em' font-size='75' x='12'>🥗</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,463 @@
+/* ===== CSS Custom Properties ===== */
+:root {
+  --color-primary: #4CAF50;
+  --color-primary-dark: #388E3C;
+  --color-primary-light: #A5D6A7;
+  --color-water: #2196F3;
+  --color-exercise: #FF9800;
+  --color-weight: #E91E63;
+  --color-bg: #f5f7fa;
+  --color-card: #ffffff;
+  --color-text: #212529;
+  --color-muted: #6c757d;
+  --bottom-nav-height: 60px;
+  --top-bar-height: 52px;
+  --ring-size: 80px;
+}
+
+/* ===== Base Reset ===== */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  overflow: hidden;
+}
+
+/* ===== Loading Overlay ===== */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+}
+
+/* ===== Screen System ===== */
+.screen { width: 100%; height: 100vh; overflow: hidden; }
+.app-screen { display: flex; flex-direction: column; }
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: calc(var(--bottom-nav-height) + 12px);
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ===== Top App Bar ===== */
+.app-bar {
+  height: var(--top-bar-height);
+  background: var(--color-card);
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  flex-shrink: 0;
+}
+.app-bar-back, .app-bar-action {
+  background: none;
+  border: none;
+  padding: 8px;
+  color: var(--color-text);
+  font-size: 1.1rem;
+  border-radius: 50%;
+  cursor: pointer;
+  line-height: 1;
+}
+.app-bar-back:hover, .app-bar-action:hover { background: #f0f0f0; }
+.app-bar-title { flex: 1; font-weight: 600; font-size: 1rem; }
+
+/* ===== Bottom Navigation ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--bottom-nav-height);
+  background: var(--color-card);
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  z-index: 200;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+}
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: var(--color-muted);
+  font-size: 0.65rem;
+  gap: 2px;
+  cursor: pointer;
+  transition: color 0.15s;
+  padding: 4px 0;
+}
+.nav-item i { font-size: 1.3rem; line-height: 1; }
+.nav-item.active { color: var(--color-primary); }
+.nav-item:hover { color: var(--color-primary); }
+
+/* ===== Auth Screen ===== */
+.auth-wrap {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: linear-gradient(135deg, #e8f5e9 0%, #f5f7fa 100%);
+}
+.auth-logo { text-align: center; margin-bottom: 24px; }
+.auth-logo-icon { font-size: 3.5rem; }
+.auth-title { font-size: 1.8rem; font-weight: 700; color: var(--color-primary-dark); margin: 4px 0 0; }
+.auth-subtitle { color: var(--color-muted); font-size: 0.9rem; margin: 4px 0 0; }
+.auth-card { width: 100%; max-width: 400px; border-radius: 16px; border: none; }
+
+/* ===== Ring Cards ===== */
+.ring-card {
+  background: var(--color-card);
+  border-radius: 12px;
+  padding: 10px 6px 8px;
+  text-align: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.ring-wrap {
+  position: relative;
+  width: var(--ring-size);
+  height: var(--ring-size);
+  margin: 0 auto 4px;
+}
+.ring-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.ring-bg {
+  fill: none;
+  stroke: #e9ecef;
+  stroke-width: 3.5;
+}
+.ring-fg {
+  fill: none;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.5s ease;
+}
+.ring-calories-fg { stroke: var(--color-primary); }
+.ring-water-fg { stroke: var(--color-water); }
+.ring-exercise-fg { stroke: var(--color-exercise); }
+.ring-val {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-text);
+}
+.ring-label { font-size: 0.7rem; font-weight: 600; color: var(--color-text); }
+.ring-sub { font-size: 0.6rem; color: var(--color-muted); }
+
+/* ===== Macros Legend ===== */
+.macros-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.macros-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.6rem;
+  color: var(--color-muted);
+}
+.macros-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ===== Friend Feed ===== */
+.friend-feed-item {
+  background: var(--color-card);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.friend-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  flex-shrink: 0;
+}
+.friend-feed-name { font-weight: 600; font-size: 0.85rem; }
+.friend-feed-stats { font-size: 0.7rem; color: var(--color-muted); }
+.friend-feed-badges { margin-left: auto; display: flex; gap: 4px; }
+
+/* ===== FAB ===== */
+.fab {
+  position: fixed;
+  bottom: calc(var(--bottom-nav-height) + 16px);
+  right: 20px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(76,175,80,0.4);
+  cursor: pointer;
+  z-index: 150;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.fab:hover { transform: scale(1.05); box-shadow: 0 6px 16px rgba(76,175,80,0.5); }
+.fab:active { transform: scale(0.96); }
+
+/* ===== Date Nav ===== */
+.date-nav { background: var(--color-card); border-bottom: 1px solid #e9ecef; }
+.date-input {
+  border: none;
+  font-weight: 600;
+  width: auto;
+  max-width: 160px;
+  cursor: pointer;
+}
+.date-input:focus { box-shadow: none; border-color: transparent; }
+
+/* ===== Food Page ===== */
+.meal-section { margin-bottom: 12px; }
+.meal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 6px;
+}
+.meal-title { font-weight: 600; font-size: 0.9rem; }
+.meal-total { font-size: 0.75rem; color: var(--color-muted); }
+.food-item {
+  background: var(--color-card);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.food-item-name { font-size: 0.85rem; font-weight: 500; flex: 1; }
+.food-item-cal { font-size: 0.85rem; font-weight: 700; color: var(--color-primary); min-width: 45px; text-align: right; }
+.food-item-macros { font-size: 0.65rem; color: var(--color-muted); }
+.food-item-del { color: #dc3545; border: none; background: none; padding: 4px; border-radius: 50%; cursor: pointer; }
+.food-item-del:hover { background: #fff0f0; }
+.btn-add-meal { width: 100%; font-size: 0.8rem; border-style: dashed; }
+
+/* ===== Daily Totals Bar ===== */
+.totals-bar {
+  position: fixed;
+  bottom: var(--bottom-nav-height);
+  left: 0;
+  right: 0;
+  background: var(--color-card);
+  border-top: 2px solid var(--color-primary);
+  padding: 6px 12px;
+  z-index: 100;
+}
+.totals-bar-inner {
+  display: flex;
+  justify-content: space-around;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.total-item { text-align: center; }
+.total-val { font-size: 1rem; font-weight: 700; color: var(--color-primary); display: block; line-height: 1.2; }
+.total-lbl { font-size: 0.6rem; color: var(--color-muted); }
+
+/* ===== Food Search Results ===== */
+.food-search-results { max-height: 240px; overflow-y: auto; }
+.food-result-item {
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  font-size: 0.85rem;
+}
+.food-result-item:hover { background: #e8f5e9; border-color: var(--color-primary-light); }
+.food-result-item.selected { background: #e8f5e9; border-color: var(--color-primary); }
+.food-result-cal { font-size: 0.75rem; color: var(--color-muted); }
+
+/* ===== Water Ring (large) ===== */
+.water-ring-wrap {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto;
+}
+.water-ring-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.water-ring-svg .ring-bg { stroke-width: 8; }
+.water-ring-svg .ring-fg { stroke-width: 8; }
+.water-ring-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.water-ring-val { font-size: 2rem; font-weight: 700; color: var(--color-water); display: block; line-height: 1; }
+.water-ring-unit { font-size: 0.8rem; color: var(--color-muted); }
+
+/* ===== Water Log Items ===== */
+.water-log-item {
+  background: var(--color-card);
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.water-log-time { font-size: 0.75rem; color: var(--color-muted); flex: 1; }
+.water-log-amount { font-weight: 600; font-size: 0.9rem; color: var(--color-water); }
+.water-log-del { color: #dc3545; border: none; background: none; padding: 4px 6px; border-radius: 50%; cursor: pointer; margin-left: 8px; }
+
+/* ===== Exercise Items ===== */
+.exercise-item {
+  background: var(--color-card);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.exercise-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff3e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.exercise-name { font-weight: 600; font-size: 0.9rem; }
+.exercise-meta { font-size: 0.75rem; color: var(--color-muted); }
+.exercise-del { margin-left: auto; color: #dc3545; border: none; background: none; padding: 4px; cursor: pointer; }
+
+/* ===== Weight Display ===== */
+.weight-display {
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-weight);
+}
+.weight-unit { font-size: 1.5rem; color: var(--color-muted); font-weight: 400; }
+.bmi-wrap { margin-top: 6px; font-size: 0.9rem; }
+.weight-log-item {
+  background: var(--color-card);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.weight-log-date { flex: 1; font-size: 0.8rem; color: var(--color-muted); }
+.weight-log-val { font-weight: 600; font-size: 0.95rem; }
+.weight-log-del { color: #dc3545; border: none; background: none; padding: 4px 6px; cursor: pointer; }
+
+/* ===== Friends ===== */
+.friend-code {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: monospace;
+  letter-spacing: 0.15em;
+  color: var(--color-primary-dark);
+  background: #e8f5e9;
+  border-radius: 8px;
+  padding: 8px 16px;
+  display: inline-block;
+}
+.friend-list-item {
+  background: var(--color-card);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.friend-request-card {
+  background: var(--color-card);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+/* ===== Bootstrap Primary Color Override ===== */
+.btn-primary { background-color: var(--color-primary); border-color: var(--color-primary); }
+.btn-primary:hover { background-color: var(--color-primary-dark); border-color: var(--color-primary-dark); }
+.btn-outline-primary { color: var(--color-primary); border-color: var(--color-primary); }
+.btn-outline-primary:hover { background-color: var(--color-primary); border-color: var(--color-primary); }
+.text-primary { color: var(--color-primary) !important; }
+.bg-primary { background-color: var(--color-primary) !important; }
+.badge.bg-primary { background-color: var(--color-primary) !important; }
+
+/* ===== Offcanvas rounded top ===== */
+.rounded-top-3 { border-radius: 16px 16px 0 0 !important; }
+
+/* ===== Utility ===== */
+.water-add-btn { min-width: 70px; }
+
+/* ===== Responsive ===== */
+@media (min-width: 768px) {
+  body { display: flex; justify-content: center; overflow: auto; }
+  #app-shell, .screen { max-width: 480px; width: 100%; }
+  #app-shell { position: relative; }
+  .bottom-nav, .fab, .totals-bar {
+    max-width: 480px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .fab { right: auto; margin-right: -240px; }
+  .auth-wrap { background: linear-gradient(135deg, #e8f5e9 0%, #f5f7fa 100%); }
+}

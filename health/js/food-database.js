@@ -1,0 +1,154 @@
+export const FOOD_CATEGORIES = [
+  '便當', '麵食', '米飯', '早餐', '飲料', '小吃', '水果', '蔬菜', '肉類蛋類', '甜點', '火鍋燒烤', '速食'
+];
+
+export const FOOD_DB = [
+  // ===== 便當 =====
+  { id: 'tw_001', name: '雞腿便當', category: '便當', calories: 650, protein: 32, carbs: 78, fat: 22, serving: '1個(約400g)' },
+  { id: 'tw_002', name: '排骨便當', category: '便當', calories: 700, protein: 28, carbs: 80, fat: 28, serving: '1個(約420g)' },
+  { id: 'tw_003', name: '控肉便當', category: '便當', calories: 680, protein: 25, carbs: 82, fat: 26, serving: '1個(約400g)' },
+  { id: 'tw_004', name: '鮭魚便當', category: '便當', calories: 590, protein: 35, carbs: 72, fat: 18, serving: '1個(約380g)' },
+  { id: 'tw_005', name: '素食便當', category: '便當', calories: 520, protein: 15, carbs: 85, fat: 14, serving: '1個(約380g)' },
+  { id: 'tw_006', name: '雞排便當', category: '便當', calories: 720, protein: 30, carbs: 80, fat: 30, serving: '1個(約420g)' },
+  { id: 'tw_007', name: '虱目魚便當', category: '便當', calories: 560, protein: 30, carbs: 70, fat: 16, serving: '1個(約380g)' },
+  { id: 'tw_008', name: '豬腳便當', category: '便當', calories: 740, protein: 30, carbs: 78, fat: 32, serving: '1個(約430g)' },
+
+  // ===== 麵食 =====
+  { id: 'tw_010', name: '牛肉麵', category: '麵食', calories: 580, protein: 28, carbs: 70, fat: 18, serving: '1碗(約500g)' },
+  { id: 'tw_011', name: '肉燥麵', category: '麵食', calories: 520, protein: 18, carbs: 72, fat: 18, serving: '1碗(約450g)' },
+  { id: 'tw_012', name: '意麵', category: '麵食', calories: 450, protein: 15, carbs: 70, fat: 12, serving: '1碗(約400g)' },
+  { id: 'tw_013', name: '陽春麵', category: '麵食', calories: 380, protein: 12, carbs: 65, fat: 8, serving: '1碗(約350g)' },
+  { id: 'tw_014', name: '擔仔麵', category: '麵食', calories: 400, protein: 16, carbs: 62, fat: 10, serving: '1碗(約380g)' },
+  { id: 'tw_015', name: '炒麵', category: '麵食', calories: 490, protein: 16, carbs: 68, fat: 18, serving: '1盤(約350g)' },
+  { id: 'tw_016', name: '泡麵', category: '麵食', calories: 450, protein: 10, carbs: 60, fat: 18, serving: '1包(約90g)' },
+  { id: 'tw_017', name: '乾麵（一般）', category: '麵食', calories: 420, protein: 14, carbs: 68, fat: 10, serving: '1份(約250g)' },
+  { id: 'tw_018', name: '湯麵（一般）', category: '麵食', calories: 380, protein: 12, carbs: 62, fat: 8, serving: '1碗(約400g)' },
+  { id: 'tw_019', name: '米粉湯', category: '麵食', calories: 320, protein: 10, carbs: 55, fat: 7, serving: '1碗(約350g)' },
+  { id: 'tw_020', name: '冬粉', category: '麵食', calories: 340, protein: 5, carbs: 78, fat: 1, serving: '1份乾(約70g)' },
+
+  // ===== 米飯 =====
+  { id: 'tw_030', name: '白飯（一碗）', category: '米飯', calories: 280, protein: 5, carbs: 62, fat: 1, serving: '1碗(約200g)' },
+  { id: 'tw_031', name: '魯肉飯', category: '米飯', calories: 380, protein: 12, carbs: 65, fat: 10, serving: '1碗(約280g)' },
+  { id: 'tw_032', name: '雞肉飯', category: '米飯', calories: 350, protein: 18, carbs: 55, fat: 8, serving: '1碗(約260g)' },
+  { id: 'tw_033', name: '蛋炒飯', category: '米飯', calories: 420, protein: 12, carbs: 65, fat: 14, serving: '1盤(約300g)' },
+  { id: 'tw_034', name: '海鮮炒飯', category: '米飯', calories: 460, protein: 20, carbs: 68, fat: 14, serving: '1盤(約350g)' },
+  { id: 'tw_035', name: '地瓜粥', category: '米飯', calories: 200, protein: 4, carbs: 44, fat: 1, serving: '1碗(約300g)' },
+  { id: 'tw_036', name: '糙米飯（一碗）', category: '米飯', calories: 260, protein: 5, carbs: 55, fat: 2, serving: '1碗(約200g)' },
+  { id: 'tw_037', name: '壽司（一個）', category: '米飯', calories: 45, protein: 2, carbs: 8, fat: 1, serving: '1個(約25g)' },
+
+  // ===== 早餐 =====
+  { id: 'tw_040', name: '蛋餅', category: '早餐', calories: 280, protein: 10, carbs: 32, fat: 12, serving: '1份(約120g)' },
+  { id: 'tw_041', name: '饅頭', category: '早餐', calories: 210, protein: 6, carbs: 42, fat: 2, serving: '1個(約75g)' },
+  { id: 'tw_042', name: '燒餅油條', category: '早餐', calories: 510, protein: 12, carbs: 65, fat: 22, serving: '1份(約150g)' },
+  { id: 'tw_043', name: '吐司夾蛋', category: '早餐', calories: 320, protein: 14, carbs: 36, fat: 14, serving: '1份(約130g)' },
+  { id: 'tw_044', name: '漢堡（早餐店）', category: '早餐', calories: 380, protein: 16, carbs: 40, fat: 18, serving: '1個(約160g)' },
+  { id: 'tw_045', name: '鐵板麵', category: '早餐', calories: 550, protein: 20, carbs: 72, fat: 20, serving: '1份(約350g)' },
+  { id: 'tw_046', name: '三明治（火腿蛋）', category: '早餐', calories: 350, protein: 16, carbs: 38, fat: 16, serving: '1份(約150g)' },
+  { id: 'tw_047', name: '飯糰', category: '早餐', calories: 290, protein: 8, carbs: 55, fat: 5, serving: '1個(約160g)' },
+  { id: 'tw_048', name: '蔥油餅', category: '早餐', calories: 360, protein: 7, carbs: 48, fat: 16, serving: '1片(約120g)' },
+  { id: 'tw_049', name: '豆漿（無糖）', category: '早餐', calories: 55, protein: 4, carbs: 3, fat: 2, serving: '1杯(250ml)' },
+  { id: 'tw_050', name: '豆漿（有糖）', category: '早餐', calories: 90, protein: 4, carbs: 12, fat: 2, serving: '1杯(250ml)' },
+  { id: 'tw_051', name: '米漿', category: '早餐', calories: 210, protein: 4, carbs: 42, fat: 3, serving: '1杯(350ml)' },
+
+  // ===== 飲料 =====
+  { id: 'tw_060', name: '珍珠奶茶（全糖）', category: '飲料', calories: 500, protein: 3, carbs: 90, fat: 12, serving: '1杯(700ml)' },
+  { id: 'tw_061', name: '珍珠奶茶（半糖）', category: '飲料', calories: 380, protein: 3, carbs: 68, fat: 12, serving: '1杯(700ml)' },
+  { id: 'tw_062', name: '綠茶（無糖）', category: '飲料', calories: 0, protein: 0, carbs: 0, fat: 0, serving: '1杯(500ml)' },
+  { id: 'tw_063', name: '紅茶（無糖）', category: '飲料', calories: 0, protein: 0, carbs: 0, fat: 0, serving: '1杯(500ml)' },
+  { id: 'tw_064', name: '木瓜牛奶', category: '飲料', calories: 250, protein: 6, carbs: 42, fat: 6, serving: '1杯(500ml)' },
+  { id: 'tw_065', name: '檸檬汁（有糖）', category: '飲料', calories: 120, protein: 0, carbs: 30, fat: 0, serving: '1杯(500ml)' },
+  { id: 'tw_066', name: '鮮奶茶', category: '飲料', calories: 200, protein: 4, carbs: 32, fat: 6, serving: '1杯(500ml)' },
+  { id: 'tw_067', name: '可樂', category: '飲料', calories: 140, protein: 0, carbs: 36, fat: 0, serving: '1罐(330ml)' },
+  { id: 'tw_068', name: '運動飲料', category: '飲料', calories: 75, protein: 0, carbs: 19, fat: 0, serving: '1瓶(600ml)' },
+  { id: 'tw_069', name: '椰子水', category: '飲料', calories: 90, protein: 2, carbs: 18, fat: 1, serving: '1瓶(500ml)' },
+  { id: 'tw_070', name: '咖啡（黑咖啡）', category: '飲料', calories: 5, protein: 0, carbs: 1, fat: 0, serving: '1杯(240ml)' },
+  { id: 'tw_071', name: '拿鐵', category: '飲料', calories: 150, protein: 8, carbs: 15, fat: 6, serving: '1杯(360ml)' },
+  { id: 'tw_072', name: '全脂牛奶', category: '飲料', calories: 150, protein: 8, carbs: 11, fat: 8, serving: '1杯(240ml)' },
+
+  // ===== 小吃 =====
+  { id: 'tw_080', name: '鹽酥雞', category: '小吃', calories: 400, protein: 22, carbs: 28, fat: 22, serving: '1份(約100g)' },
+  { id: 'tw_081', name: '蚵仔煎', category: '小吃', calories: 350, protein: 12, carbs: 48, fat: 14, serving: '1份(約200g)' },
+  { id: 'tw_082', name: '刈包', category: '小吃', calories: 420, protein: 16, carbs: 52, fat: 16, serving: '1個(約150g)' },
+  { id: 'tw_083', name: '肉圓', category: '小吃', calories: 260, protein: 8, carbs: 38, fat: 8, serving: '1個(約110g)' },
+  { id: 'tw_084', name: '臭豆腐（炸）', category: '小吃', calories: 320, protein: 16, carbs: 20, fat: 20, serving: '1份(約150g)' },
+  { id: 'tw_085', name: '蚵仔麵線', category: '小吃', calories: 280, protein: 10, carbs: 45, fat: 6, serving: '1碗(約300g)' },
+  { id: 'tw_086', name: '大腸包小腸', category: '小吃', calories: 480, protein: 16, carbs: 60, fat: 20, serving: '1份(約200g)' },
+  { id: 'tw_087', name: '滷味（綜合）', category: '小吃', calories: 300, protein: 20, carbs: 25, fat: 12, serving: '1份(約200g)' },
+  { id: 'tw_088', name: '甜不辣', category: '小吃', calories: 200, protein: 10, carbs: 30, fat: 5, serving: '1份(約120g)' },
+  { id: 'tw_089', name: '貢丸湯', category: '小吃', calories: 180, protein: 12, carbs: 18, fat: 6, serving: '1碗(約300g)' },
+
+  // ===== 水果 =====
+  { id: 'tw_090', name: '芒果', category: '水果', calories: 60, protein: 1, carbs: 15, fat: 0, serving: '100g' },
+  { id: 'tw_091', name: '鳳梨', category: '水果', calories: 50, protein: 1, carbs: 13, fat: 0, serving: '100g' },
+  { id: 'tw_092', name: '香蕉', category: '水果', calories: 90, protein: 1, carbs: 23, fat: 0, serving: '1根(約90g)' },
+  { id: 'tw_093', name: '芭樂', category: '水果', calories: 38, protein: 1, carbs: 8, fat: 0, serving: '100g' },
+  { id: 'tw_094', name: '木瓜', category: '水果', calories: 43, protein: 1, carbs: 11, fat: 0, serving: '100g' },
+  { id: 'tw_095', name: '蓮霧', category: '水果', calories: 35, protein: 0, carbs: 9, fat: 0, serving: '100g' },
+  { id: 'tw_096', name: '西瓜', category: '水果', calories: 30, protein: 1, carbs: 8, fat: 0, serving: '100g' },
+  { id: 'tw_097', name: '蘋果', category: '水果', calories: 52, protein: 0, carbs: 14, fat: 0, serving: '1顆(約150g)' },
+  { id: 'tw_098', name: '葡萄', category: '水果', calories: 67, protein: 1, carbs: 17, fat: 0, serving: '100g' },
+  { id: 'tw_099', name: '草莓', category: '水果', calories: 33, protein: 1, carbs: 8, fat: 0, serving: '100g' },
+
+  // ===== 蔬菜 =====
+  { id: 'tw_100', name: '空心菜炒（清炒）', category: '蔬菜', calories: 80, protein: 3, carbs: 8, fat: 4, serving: '1盤(約150g)' },
+  { id: 'tw_101', name: '地瓜葉炒', category: '蔬菜', calories: 65, protein: 4, carbs: 7, fat: 3, serving: '1盤(約150g)' },
+  { id: 'tw_102', name: '高麗菜炒', category: '蔬菜', calories: 55, protein: 2, carbs: 7, fat: 3, serving: '1盤(約150g)' },
+  { id: 'tw_103', name: '嫩豆腐', category: '蔬菜', calories: 76, protein: 8, carbs: 2, fat: 4, serving: '100g' },
+  { id: 'tw_104', name: '蒸蛋', category: '蔬菜', calories: 80, protein: 7, carbs: 1, fat: 5, serving: '1份(約100g)' },
+  { id: 'tw_105', name: '燙花椰菜', category: '蔬菜', calories: 35, protein: 3, carbs: 7, fat: 0, serving: '1份(約100g)' },
+  { id: 'tw_106', name: '炒蛋', category: '蔬菜', calories: 160, protein: 12, carbs: 1, fat: 12, serving: '2顆蛋(約100g)' },
+  { id: 'tw_107', name: '地瓜（烤）', category: '蔬菜', calories: 130, protein: 2, carbs: 30, fat: 0, serving: '1條(約120g)' },
+
+  // ===== 肉類蛋類 =====
+  { id: 'tw_110', name: '雞胸肉（水煮）', category: '肉類蛋類', calories: 165, protein: 31, carbs: 0, fat: 4, serving: '100g' },
+  { id: 'tw_111', name: '雞腿肉（去皮）', category: '肉類蛋類', calories: 175, protein: 26, carbs: 0, fat: 8, serving: '100g' },
+  { id: 'tw_112', name: '豬五花', category: '肉類蛋類', calories: 395, protein: 14, carbs: 0, fat: 37, serving: '100g' },
+  { id: 'tw_113', name: '豬里肌', category: '肉類蛋類', calories: 180, protein: 22, carbs: 0, fat: 10, serving: '100g' },
+  { id: 'tw_114', name: '牛肉（瘦）', category: '肉類蛋類', calories: 250, protein: 26, carbs: 0, fat: 15, serving: '100g' },
+  { id: 'tw_115', name: '水煮蛋', category: '肉類蛋類', calories: 78, protein: 6, carbs: 1, fat: 5, serving: '1顆(約50g)' },
+  { id: 'tw_116', name: '荷包蛋（煎）', category: '肉類蛋類', calories: 100, protein: 6, carbs: 0, fat: 8, serving: '1顆(約50g)' },
+  { id: 'tw_117', name: '鮭魚', category: '肉類蛋類', calories: 208, protein: 20, carbs: 0, fat: 13, serving: '100g' },
+  { id: 'tw_118', name: '鯖魚', category: '肉類蛋類', calories: 205, protein: 19, carbs: 0, fat: 14, serving: '100g' },
+  { id: 'tw_119', name: '蝦仁', category: '肉類蛋類', calories: 99, protein: 21, carbs: 0, fat: 1, serving: '100g' },
+
+  // ===== 甜點 =====
+  { id: 'tw_120', name: '芒果冰', category: '甜點', calories: 350, protein: 4, carbs: 72, fat: 6, serving: '1份(約300g)' },
+  { id: 'tw_121', name: '豆花', category: '甜點', calories: 200, protein: 6, carbs: 38, fat: 4, serving: '1碗(約300g)' },
+  { id: 'tw_122', name: '湯圓', category: '甜點', calories: 180, protein: 3, carbs: 36, fat: 4, serving: '6顆(約100g)' },
+  { id: 'tw_123', name: '麻糬', category: '甜點', calories: 210, protein: 2, carbs: 46, fat: 2, serving: '2個(約100g)' },
+  { id: 'tw_124', name: '仙草', category: '甜點', calories: 120, protein: 1, carbs: 28, fat: 0, serving: '1碗(約300g)' },
+  { id: 'tw_125', name: '愛玉', category: '甜點', calories: 100, protein: 0, carbs: 24, fat: 0, serving: '1碗(約300g)' },
+  { id: 'tw_126', name: '布丁', category: '甜點', calories: 150, protein: 4, carbs: 25, fat: 4, serving: '1個(約100g)' },
+  { id: 'tw_127', name: '鬆餅', category: '甜點', calories: 380, protein: 8, carbs: 55, fat: 14, serving: '1份(約150g)' },
+
+  // ===== 火鍋燒烤 =====
+  { id: 'tw_130', name: '麻辣鍋底（湯）', category: '火鍋燒烤', calories: 300, protein: 5, carbs: 12, fat: 26, serving: '1人份(約500ml)' },
+  { id: 'tw_131', name: '豬肉片（火鍋）', category: '火鍋燒烤', calories: 220, protein: 16, carbs: 0, fat: 17, serving: '100g' },
+  { id: 'tw_132', name: '牛肉片（火鍋）', category: '火鍋燒烤', calories: 240, protein: 18, carbs: 0, fat: 18, serving: '100g' },
+  { id: 'tw_133', name: '魚蛋（火鍋）', category: '火鍋燒烤', calories: 120, protein: 8, carbs: 12, fat: 4, serving: '100g' },
+  { id: 'tw_134', name: '豬五花燒烤', category: '火鍋燒烤', calories: 420, protein: 14, carbs: 2, fat: 40, serving: '100g' },
+  { id: 'tw_135', name: '玉米（整根）', category: '火鍋燒烤', calories: 130, protein: 4, carbs: 29, fat: 2, serving: '1根(約150g)' },
+  { id: 'tw_136', name: '茼蒿', category: '火鍋燒烤', calories: 25, protein: 2, carbs: 4, fat: 0, serving: '100g' },
+
+  // ===== 速食 =====
+  { id: 'tw_140', name: '麥當勞大麥克', category: '速食', calories: 550, protein: 25, carbs: 46, fat: 30, serving: '1個(約200g)' },
+  { id: 'tw_141', name: '麥當勞薯條（中）', category: '速食', calories: 340, protein: 4, carbs: 44, fat: 16, serving: '1份(約117g)' },
+  { id: 'tw_142', name: '肯德基原味雞腿', category: '速食', calories: 380, protein: 28, carbs: 14, fat: 22, serving: '1隻(約160g)' },
+  { id: 'tw_143', name: '摩斯米漢堡', category: '速食', calories: 420, protein: 16, carbs: 62, fat: 12, serving: '1個(約180g)' },
+  { id: 'tw_144', name: '7-11 茶葉蛋', category: '速食', calories: 78, protein: 6, carbs: 2, fat: 5, serving: '1顆(約50g)' },
+  { id: 'tw_145', name: '貢丸（關東煮）', category: '速食', calories: 60, protein: 5, carbs: 6, fat: 2, serving: '1顆(約30g)' },
+  { id: 'tw_146', name: '御飯糰（鮪魚）', category: '速食', calories: 180, protein: 7, carbs: 32, fat: 3, serving: '1個(約110g)' },
+  { id: 'tw_147', name: '御飯糰（鮭魚）', category: '速食', calories: 175, protein: 8, carbs: 31, fat: 3, serving: '1個(約110g)' },
+  { id: 'tw_148', name: '便利商店三角飯糰', category: '速食', calories: 190, protein: 5, carbs: 38, fat: 2, serving: '1個(約115g)' },
+  { id: 'tw_149', name: '夾心餅乾', category: '速食', calories: 160, protein: 2, carbs: 24, fat: 6, serving: '4片(約40g)' },
+  { id: 'tw_150', name: '洋芋片', category: '速食', calories: 150, protein: 2, carbs: 15, fat: 10, serving: '1小包(約28g)' }
+];
+
+export function searchFoods(query) {
+  if (!query || query.trim() === '') return FOOD_DB.slice(0, 20);
+  const q = query.trim().toLowerCase();
+  const exact = FOOD_DB.filter(f => f.name.toLowerCase().startsWith(q));
+  const contains = FOOD_DB.filter(f => !f.name.toLowerCase().startsWith(q) && f.name.toLowerCase().includes(q));
+  const catMatch = FOOD_DB.filter(f => !f.name.toLowerCase().includes(q) && f.category.toLowerCase().includes(q));
+  return [...exact, ...contains, ...catMatch].slice(0, 20);
+}
