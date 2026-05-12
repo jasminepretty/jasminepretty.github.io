@@ -377,11 +377,12 @@ export const FOOD_DB = [
   { id: 'tw_190', name: '酪梨', category: '健身餐', calories: 160, protein: 2, carbs: 9, fat: 15, serving: '1/2顆(約100g)' }
 ];
 
-export function searchFoods(query) {
-  if (!query || query.trim() === '') return FOOD_DB.slice(0, 20);
+export function searchFoods(query, category = '') {
+  const pool = category ? FOOD_DB.filter(f => f.category === category) : FOOD_DB;
+  if (!query || query.trim() === '') return pool.slice(0, 30);
   const q = query.trim().toLowerCase();
-  const exact = FOOD_DB.filter(f => f.name.toLowerCase().startsWith(q));
-  const contains = FOOD_DB.filter(f => !f.name.toLowerCase().startsWith(q) && f.name.toLowerCase().includes(q));
-  const catMatch = FOOD_DB.filter(f => !f.name.toLowerCase().includes(q) && f.category.toLowerCase().includes(q));
-  return [...exact, ...contains, ...catMatch].slice(0, 20);
+  const exact = pool.filter(f => f.name.toLowerCase().startsWith(q));
+  const contains = pool.filter(f => !f.name.toLowerCase().startsWith(q) && f.name.toLowerCase().includes(q));
+  const catMatch = pool.filter(f => !f.name.toLowerCase().includes(q) && f.category.toLowerCase().includes(q));
+  return [...exact, ...contains, ...catMatch].slice(0, 30);
 }
