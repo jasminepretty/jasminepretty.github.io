@@ -131,6 +131,8 @@ async function deleteEntry(logId) {
     _logs = _logs.filter(l => l.id !== logId);
     renderList();
     showToast('已刪除');
+  } catch (e) {
+    showToast('刪除失敗，請再試一次', 'error');
   } finally {
     hideLoading();
   }

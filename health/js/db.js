@@ -271,38 +271,27 @@ export async function getFriends(uid) {
 }
 
 export async function getPendingRequests(uid) {
-  const [qInA, qInB, qOutA, qOutB] = [
-    query(collection(db(), 'friendships'), where('userA', '==', uid), where('status', '==', 'pending'), where('initiatedBy', '!=', uid)),
-    query(collection(db(), 'friendships'), where('userB', '==', uid), where('status', '==', 'pending'), where('initiatedBy', '!=', uid)),
-    query(collection(db(), 'friendships'), where('initiatedBy', '==', uid), where('status', '==', 'pending')),
-    query(collection(db(), 'friendships'), where('initiatedBy', '==', uid), where('status', '==', 'pending'))
-  ];
+  const [snapA, snapB] = await Promise.all([
+    getDocs(query(collection(db(), 'friendships'), where('userA', '==', uid), where('status', '==', 'pending'))),
+    getDocs(query(collection(db(), 'friendships'), where('userB', '==', uid), where('status', '==', 'pending')))
+  ]);
 
   const incoming = [];
   const outgoing = [];
+  const seen = new Set();
 
-  // Incoming: userA or userB is me, but initiatedBy != me
-  const inSnaps = await Promise.all([getDocs(qInA), getDocs(qInB)]);
-  for (const snap of inSnaps) {
-    for (const d of snap.docs) {
-      if (d.data().initiatedBy !== uid) {
-        const friendUid = d.data().userA === uid ? d.data().userB : d.data().userA;
-        const profile = await getUserProfile(friendUid);
-        if (profile) incoming.push({ fid: d.id, ...profile });
-      }
-    }
-  }
-
-  // Outgoing: initiated by me, status pending
-  const outSnap = await getDocs(query(
-    collection(db(), 'friendships'),
-    where('initiatedBy', '==', uid),
-    where('status', '==', 'pending')
-  ));
-  for (const d of outSnap.docs) {
-    const friendUid = d.data().userA === uid ? d.data().userB : d.data().userA;
+  for (const d of [...snapA.docs, ...snapB.docs]) {
+    if (seen.has(d.id)) continue;
+    seen.add(d.id);
+    const data = d.data();
+    const friendUid = data.userA === uid ? data.userB : data.userA;
     const profile = await getUserProfile(friendUid);
-    if (profile) outgoing.push({ fid: d.id, ...profile });
+    if (!profile) continue;
+    if (data.initiatedBy === uid) {
+      outgoing.push({ fid: d.id, ...profile });
+    } else {
+      incoming.push({ fid: d.id, ...profile });
+    }
   }
 
   return { incoming, outgoing };
