@@ -97,7 +97,8 @@ async function addWater(ml) {
     else showToast(`已記錄 ${ml} ml`);
     await renderWeekChart();
   } catch (e) {
-    showToast('記錄失敗，請再試一次', 'error');
+    console.error('addWater error:', e.code, e.message);
+    showToast('記錄失敗：' + (e.code || e.message), 'error');
   } finally {
     hideLoading();
   }
