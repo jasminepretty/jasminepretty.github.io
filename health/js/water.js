@@ -96,6 +96,8 @@ async function addWater(ml) {
     if (total >= goals.dailyWaterMl) showToast('達成今日喝水目標！💧', 'success');
     else showToast(`已記錄 ${ml} ml`);
     await renderWeekChart();
+  } catch (e) {
+    showToast('記錄失敗，請再試一次', 'error');
   } finally {
     hideLoading();
   }
@@ -111,6 +113,8 @@ async function deleteWaterEntry(logId) {
     renderRing();
     renderLogList();
     showToast('已刪除');
+  } catch (e) {
+    showToast('刪除失敗，請再試一次', 'error');
   } finally {
     hideLoading();
   }
