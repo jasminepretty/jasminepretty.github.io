@@ -300,3 +300,24 @@ export async function getPendingRequests(uid) {
 export async function updateSharePreference(uid, isPublic) {
   await updateDoc(doc(db(), 'users', uid), { shareWithFriends: isPublic });
 }
+
+// ===== Custom Foods (user history) =====
+export async function saveCustomFood(uid, food) {
+  const key = food.name.replace(/\s+/g, '').toLowerCase().slice(0, 40);
+  await setDoc(doc(db(), 'users', uid, 'customFoods', key), {
+    name: food.name,
+    calories: food.calories || 0,
+    protein: food.protein || 0,
+    carbs: food.carbs || 0,
+    fat: food.fat || 0,
+    lastUsed: serverTimestamp()
+  }, { merge: true });
+}
+
+export async function getCustomFoods(uid) {
+  const snap = await getDocs(collection(db(), 'users', uid, 'customFoods'));
+  return snap.docs
+    .map(d => ({ ...d.data(), id: 'uc_' + d.id, isCustom: true }))
+    .sort((a, b) => (b.lastUsed?.seconds || 0) - (a.lastUsed?.seconds || 0))
+    .slice(0, 50);
+}

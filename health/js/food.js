@@ -1,4 +1,4 @@
-import { addFoodLog, getFoodLogs, deleteFoodLog } from './db.js';
+import { addFoodLog, getFoodLogs, deleteFoodLog, saveCustomFood, getCustomFoods } from './db.js';
 import { showToast, showLoading, hideLoading, getGoals } from './app.js';
 import { searchFoods } from './food-database.js';
 import { todayStr } from './db.js';
@@ -13,6 +13,7 @@ let _activeMeal = 'breakfast';
 let _selectedFood = null;
 let _foodModal = null;
 let _searchDebounce = null;
+let _customFoods = [];
 
 export function initFood(uid) {
   _uid = uid;
@@ -36,6 +37,7 @@ export function initFood(uid) {
   document.getElementById('modal-add-food').addEventListener('hidden.bs.modal', resetModal);
 
   loadDay();
+  getCustomFoods(uid).then(foods => { _customFoods = foods; }).catch(() => {});
 }
 
 function shiftDay(delta) {
@@ -136,32 +138,55 @@ function openAddFoodModal(meal) {
 }
 
 function renderSearchResults(query) {
-  const results = searchFoods(query);
+  const q = (query || '').trim().toLowerCase();
+  const dbResults = searchFoods(query);
+
+  const matchedCustom = q
+    ? _customFoods.filter(f => f.name.toLowerCase().includes(q))
+    : _customFoods.slice(0, 5);
+
+  // Custom foods first, then db foods (deduplicate by name)
+  const customNames = new Set(matchedCustom.map(f => f.name));
+  const combined = [
+    ...matchedCustom,
+    ...dbResults.filter(f => !customNames.has(f.name))
+  ].slice(0, 20);
+
   const container = document.getElementById('food-search-results');
-  if (results.length === 0) {
+  if (combined.length === 0) {
     container.innerHTML = '<p class="text-muted small text-center py-2">找不到相符食物</p>';
     return;
   }
-  container.innerHTML = results.map(f => `
-    <div class="food-result-item ${_selectedFood?.id === f.id ? 'selected' : ''}"
-      onclick="window._selectFood('${f.id}')">
-      <div>
-        <div>${escHtml(f.name)}</div>
-        <div class="text-muted" style="font-size:0.7rem">${f.serving}</div>
-      </div>
-      <span class="food-result-cal">${f.calories} kcal</span>
-    </div>`).join('');
+
+  if (!q && _customFoods.length > 0) {
+    container.innerHTML = '<p class="text-muted small mb-1" style="font-size:0.7rem">⭐ 最近使用</p>' +
+      combined.map(f => foodResultHTML(f)).join('');
+  } else {
+    container.innerHTML = combined.map(f => foodResultHTML(f)).join('');
+  }
 
   window._selectFood = (id) => {
-    const food = results.find(f => f.id === id);
+    const food = combined.find(f => f.id === id);
     if (!food) return;
     _selectedFood = food;
     document.getElementById('food-selected-name').textContent =
       `已選：${food.name}（${food.calories} kcal · 蛋白質${food.protein}g · 碳水${food.carbs}g · 脂肪${food.fat}g）`;
     document.getElementById('food-selected-preview').classList.remove('d-none');
-    // Re-render to update selected state
     renderSearchResults(document.getElementById('food-search').value);
   };
+}
+
+function foodResultHTML(f) {
+  const customBadge = f.isCustom ? '<span class="badge bg-secondary ms-1" style="font-size:0.6rem">我的</span>' : '';
+  return `
+    <div class="food-result-item ${_selectedFood?.id === f.id ? 'selected' : ''}"
+      onclick="window._selectFood('${f.id}')">
+      <div>
+        <div>${escHtml(f.name)}${customBadge}</div>
+        <div class="text-muted" style="font-size:0.7rem">${f.serving || '自訂份量'}</div>
+      </div>
+      <span class="food-result-cal">${f.calories} kcal</span>
+    </div>`;
 }
 
 async function saveFood() {
@@ -199,6 +224,11 @@ async function saveFood() {
   showLoading();
   try {
     await addFoodLog(_uid, entry);
+    if (entry.source === 'manual') {
+      saveCustomFood(_uid, entry).then(async () => {
+        _customFoods = await getCustomFoods(_uid).catch(() => _customFoods);
+      });
+    }
     _foodModal.hide();
     _allEntries = await getFoodLogs(_uid, _currentDate);
     renderMeals();
