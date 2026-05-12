@@ -1,6 +1,6 @@
 import { addFoodLog, getFoodLogs, deleteFoodLog, saveCustomFood, getCustomFoods } from './db.js';
 import { showToast, showLoading, hideLoading, getGoals } from './app.js';
-import { searchFoods } from './food-database.js';
+import { searchFoods, FOOD_CATEGORIES } from './food-database.js';
 import { todayStr } from './db.js';
 
 const MEAL_LABELS = { breakfast: '早餐', lunch: '午餐', dinner: '晚餐', snack: '點心' };
@@ -14,6 +14,7 @@ let _selectedFood = null;
 let _foodModal = null;
 let _searchDebounce = null;
 let _customFoods = [];
+let _selectedCategory = '';
 
 export function initFood(uid) {
   _uid = uid;
@@ -35,6 +36,24 @@ export function initFood(uid) {
 
   // Reset modal state when closed
   document.getElementById('modal-add-food').addEventListener('hidden.bs.modal', resetModal);
+
+  // Category filter buttons
+  const filterContainer = document.getElementById('food-category-filter');
+  filterContainer.innerHTML = ['全部', '我的食物', ...FOOD_CATEGORIES].map(cat => `
+    <button class="btn btn-sm food-cat-btn ${cat === '' || cat === '全部' ? 'btn-primary' : 'btn-outline-secondary'} flex-shrink-0"
+      data-cat="${cat === '全部' ? '' : cat}"
+      style="white-space:nowrap;font-size:0.75rem">${cat}</button>
+  `).join('');
+  filterContainer.querySelectorAll('.food-cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      _selectedCategory = btn.dataset.cat;
+      filterContainer.querySelectorAll('.food-cat-btn').forEach(b => {
+        b.className = b.className.replace('btn-primary', 'btn-outline-secondary');
+      });
+      btn.className = btn.className.replace('btn-outline-secondary', 'btn-primary');
+      renderSearchResults(document.getElementById('food-search').value);
+    });
+  });
 
   loadDay();
   getCustomFoods(uid).then(foods => { _customFoods = foods; }).catch(() => {});
@@ -139,34 +158,40 @@ function openAddFoodModal(meal) {
 
 function renderSearchResults(query) {
   const q = (query || '').trim().toLowerCase();
-  const dbResults = searchFoods(query);
 
-  const matchedCustom = q
-    ? _customFoods.filter(f => f.name.toLowerCase().includes(q))
-    : _customFoods.slice(0, 5);
+  // 「我的食物」分類
+  if (_selectedCategory === '我的食物') {
+    const filtered = q ? _customFoods.filter(f => f.name.toLowerCase().includes(q)) : _customFoods;
+    renderList(filtered, '尚無自訂食物記錄');
+    return;
+  }
 
-  // Custom foods first, then db foods (deduplicate by name)
+  const dbResults = searchFoods(query, _selectedCategory);
+  const matchedCustom = _selectedCategory
+    ? []
+    : (q ? _customFoods.filter(f => f.name.toLowerCase().includes(q)) : _customFoods.slice(0, 5));
+
   const customNames = new Set(matchedCustom.map(f => f.name));
   const combined = [
     ...matchedCustom,
     ...dbResults.filter(f => !customNames.has(f.name))
-  ].slice(0, 20);
+  ].slice(0, 30);
 
+  const showRecentHeader = !q && !_selectedCategory && _customFoods.length > 0;
+  renderList(combined, '找不到相符食物', showRecentHeader);
+}
+
+function renderList(items, emptyMsg, showRecentHeader = false) {
   const container = document.getElementById('food-search-results');
-  if (combined.length === 0) {
-    container.innerHTML = '<p class="text-muted small text-center py-2">找不到相符食物</p>';
+  if (items.length === 0) {
+    container.innerHTML = `<p class="text-muted small text-center py-2">${emptyMsg}</p>`;
     return;
   }
-
-  if (!q && _customFoods.length > 0) {
-    container.innerHTML = '<p class="text-muted small mb-1" style="font-size:0.7rem">⭐ 最近使用</p>' +
-      combined.map(f => foodResultHTML(f)).join('');
-  } else {
-    container.innerHTML = combined.map(f => foodResultHTML(f)).join('');
-  }
+  const header = showRecentHeader ? '<p class="text-muted small mb-1" style="font-size:0.7rem">⭐ 最近使用</p>' : '';
+  container.innerHTML = header + items.map(f => foodResultHTML(f)).join('');
 
   window._selectFood = (id) => {
-    const food = combined.find(f => f.id === id);
+    const food = items.find(f => f.id === id);
     if (!food) return;
     _selectedFood = food;
     document.getElementById('food-selected-name').textContent =
@@ -259,7 +284,13 @@ async function deleteEntry(logId, mealType) {
 
 function resetModal() {
   _selectedFood = null;
+  _selectedCategory = '';
   document.getElementById('food-selected-preview').classList.add('d-none');
+  // Reset category buttons
+  document.querySelectorAll('.food-cat-btn').forEach((b, i) => {
+    b.className = b.className.replace('btn-primary', 'btn-outline-secondary');
+    if (i === 0) b.className = b.className.replace('btn-outline-secondary', 'btn-primary');
+  });
 }
 
 function escHtml(str) {
