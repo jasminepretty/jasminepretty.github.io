@@ -85,7 +85,7 @@ async function addFriend() {
   } catch (e) {
     if (e.message === 'already_friends') showToast('你們已經是好友了', 'warning');
     else if (e.message === 'already_pending') showToast('已送出邀請，等待對方確認', 'warning');
-    else showToast('送出邀請失敗，請再試一次', 'error');
+    else { console.error('sendFriendRequest error:', e.code, e.message); showToast('送出邀請失敗：' + (e.code || e.message), 'error'); }
     return;
   } finally {
     hideLoading();
